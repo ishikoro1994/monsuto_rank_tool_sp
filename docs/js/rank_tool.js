@@ -445,9 +445,9 @@ function calcExp() {
 
 // 目標月日プルダウン選択項目変更
 function changeDay() {
-    var targetYear = $(ID_TARGET_YEAR).val();
-    var targetMonth = $(ID_TARGET_MONTH).val();
-    var targetDay = $(ID_TARGET_DAY).val();
+    var targetYear = $(ID_TARGET_YEAR).text();
+    var targetMonth = $(ID_TARGET_MONTH).text();
+    var targetDay = $(ID_TARGET_DAY).text();
     var lastDate = new Date(targetYear, targetMonth, 0);
 
     $(ID_TARGET_DAY + ' option').remove();
@@ -527,7 +527,7 @@ function setTweetButton(){
         text += '(推定)';
     }
     text += '\n';
-    text += '【目標日】' + $(ID_TARGET_YEAR).val() + '年' + $(ID_TARGET_MONTH).val() + '月' + $(ID_TARGET_DAY).val() + '日' + '\n';
+    text += '【目標日】' + $(ID_TARGET_YEAR).text() + '年' + $(ID_TARGET_MONTH).text() + '月' + $(ID_TARGET_DAY).text() + '日' + '\n';
     text += '目標までに必要な経験値は ' + $(ID_NEED_EXP).text() + '\n';
     text += '毎日 ' + $(ID_DAYS_EXP).text() + ' 獲得すれば達成可能！';
 
