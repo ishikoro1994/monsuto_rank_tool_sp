@@ -70,8 +70,8 @@ $(document).ready(function() {
             // 目標年月日設定
             var today = new Date();
             $(ID_TARGET_YEAR).text('2022');
-            $(ID_TARGET_MONTH).text('1');
-            $(ID_TARGET_DAY).text('11');
+            $(ID_TARGET_MONTH).text('3');
+            $(ID_TARGET_DAY).text('15');
 
             // 現在のランク
             setInitVal(NOW_RANK);
@@ -539,7 +539,7 @@ function setTweetButton(){
       {
         text: text, // 狙ったテキスト
         url: 'https://ishikoro1994.github.io/monsuto_rank_tool_sp/',
-        hashtags: 'モンスト,モンスト目標宣言,ことぶき,けいウサ',
+        hashtags: 'モンスト,モンスト目標宣言,けいウサ',
         lang: 'ja'
       }
     );
