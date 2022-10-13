@@ -5,10 +5,11 @@ var maxRank = 0;
 var lastExp = 0;
 var lastExpDiff = 0;
 var lapTypeCount = 0;
-var explist = [15000, 10000, 9900, 9800];
 var baseExp = 0;
 var lapInfoList = [];
+const DEFAULT_EXP = 66000;
 const WAKUWAKU_MANABI = 1.6;
+const WAKUWAKU_MANABI_EL = 1.65;
 const MIN_MONTH = 1;
 const MAX_MONTH = 12;
 const MIN_DAY = 1;
@@ -44,6 +45,8 @@ const ID_NOW_RANK = '#' + NOW_RANK;
 $(document).ready(function() {
     var d = new $.Deferred();
 
+    $('#base_exp_label').text(addFigure(DEFAULT_EXP) + 'に1.6(学び特L)を掛けた経験値を基に計算しています。');
+
     async(function() {
         loadRankTableCsv();
         d.resolve();
@@ -70,8 +73,8 @@ $(document).ready(function() {
             // 目標年月日設定
             var today = new Date();
             $(ID_TARGET_YEAR).text('2022');
-            $(ID_TARGET_MONTH).text('3');
-            $(ID_TARGET_DAY).text('15');
+            $(ID_TARGET_MONTH).text('10');
+            $(ID_TARGET_DAY).text('31');
 
             // 現在のランク
             setInitVal(NOW_RANK);
@@ -96,7 +99,6 @@ function async(f) {
  * 目標ランク変更イベント
  */
 function changeTargetRank() {
-    setCookieVal(TARGET_RANK);
     // 算出
     $(ID_TARGET_EXP).text(addFigure(calcRankToExp(ID_TARGET_RANK)));
     calcAll();
@@ -111,8 +113,6 @@ function changeNowRank() {
     // 算出
     $(ID_TOTAL_EXP).val(addFigure(calcRankToExp(ID_NOW_RANK)));
     calcAll();
-    setCookieVal(NOW_RANK);
-    setCookieVal(TOTAL_EXP, true);
     // ツイートボタン生成
     setTweetButton();
 }
@@ -128,8 +128,6 @@ function changeTotalExp() {
     calcNowRank();
     // 算出
     calcAll();
-    setCookieVal(NOW_RANK);
-    setCookieVal(TOTAL_EXP, true);
     // ツイートボタン生成
     setTweetButton();
 }
@@ -461,19 +459,6 @@ function changeDay() {
 }
 
 /**
- * クッキーに値を設定
- */
-function setCookieVal(id, isDelFigure = false) {
-    // 画面入力値取得
-    var value = $('#' + id).val();
-    if (isDelFigure) {
-        // カンマを外す
-        value = delFigure(value);
-    }
-    Cookies.set(id, value);
-}
-
-/**
  * 数値プルダウン選択肢作成
  */
 function createNumPulldownOption(id, from, to) {
@@ -543,4 +528,22 @@ function setTweetButton(){
         lang: 'ja'
       }
     );
+}
+
+/**
+ * 学びELチェック
+ */
+function changeElCheck(){
+    let exp = DEFAULT_EXP;
+    let wakuwaku = WAKUWAKU_MANABI;
+    let wakuwakuLabel = '1.6(学び特L)';
+    if ($('#el_check').prop("checked")){
+        wakuwaku = WAKUWAKU_MANABI_EL;
+        wakuwakuLabel = '1.65(学び特EL)';
+    }
+    $('#base_exp_label').text('の経験値は' + addFigure(exp) + wakuwakuLabel);
+    $('#base_exp_label').text(addFigure(DEFAULT_EXP) + 'に' + wakuwakuLabel + 'を掛けた経験値を基に計算しています。');
+    baseExp = Number(wakuwaku * exp);
+    makeLapCount();
+    calcAll();
 }
