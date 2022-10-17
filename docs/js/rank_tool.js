@@ -7,6 +7,7 @@ var lastExpDiff = 0;
 var lapTypeCount = 0;
 var baseExp = 0;
 var lapInfoList = [];
+var wakuwaku = 0; // 現在選択されている学び
 const DEFAULT_EXP = 66000;
 const WAKUWAKU_MANABI = 1.6;
 const WAKUWAKU_MANABI_EL = 1.65;
@@ -45,7 +46,9 @@ const ID_NOW_RANK = '#' + NOW_RANK;
 $(document).ready(function() {
     var d = new $.Deferred();
 
+    wakuwaku = WAKUWAKU_MANABI
     $('#base_exp_label').text(addFigure(DEFAULT_EXP) + 'に1.6(学び特L)を掛けた経験値を基に計算しています。');
+    baseExp = Number(WAKUWAKU_MANABI * DEFAULT_EXP);
 
     async(function() {
         loadRankTableCsv();
@@ -238,7 +241,7 @@ function makeLapInfoArrayList(data) {
     for(var i = 0; i < lapInfoList.length; i++){
         rapInfoArray.push(lapInfoList[i].split(","));
         var expMag = rapInfoArray[i][1];
-        expMag = parseFloat(expMag) * WAKUWAKU_MANABI;
+        expMag = parseFloat(expMag) * wakuwaku;
         var expMagStr = addFigure(expMag);
         var needExp = $(ID_NEED_EXP).text();
 
@@ -535,7 +538,7 @@ function setTweetButton(){
  */
 function changeElCheck(){
     let exp = DEFAULT_EXP;
-    let wakuwaku = WAKUWAKU_MANABI;
+    wakuwaku = WAKUWAKU_MANABI;
     let wakuwakuLabel = '1.6(学び特L)';
     if ($('#el_check').prop("checked")){
         wakuwaku = WAKUWAKU_MANABI_EL;
