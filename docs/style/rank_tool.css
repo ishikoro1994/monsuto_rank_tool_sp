@@ -35,7 +35,7 @@
 }
 
 /*周回数テーブル ヘッダ*/
-#lap_count_table thead {
+[id^="lap_count_table"] thead {
   background-color: palegreen;
 }
 
@@ -65,13 +65,34 @@
 }
 
 /*周回数テーブル 説明*/
-#lap_tips {
+label[name="lap_tips"] {
   margin-top: initial;
 }
 
 /*シェアラベル*/
 #tweet_label {
   float: left;
+}
+
+#lap_type1 {
+  width: 370px;
+}
+
+p[name="el_check"] {
+  margin: unset;
+}
+
+#contact {
+  margin-top: 10px;
+}
+
+#event_period {
+  margin: unset;
+  margin-bottom: 5px;
+}
+
+#out_ob_term_lbl {
+  color: red;
 }
 
 /*ウィンドウ幅が767px以上の場合に適用*/
@@ -118,11 +139,13 @@
     width: 60px;
   }
 
+  #event_period,
+  #normal_link,
   #how_to {
     font-size: 14px;
   }
 
-  #lap_tips {
+  label[name="lap_tips"] {
     font-size: 14px;
   }
 
@@ -136,6 +159,22 @@
 
   .disp_columnL {
     width: 135;
+  }
+
+  #lap_type1 {
+    float: left;
+  }
+
+  #baseexp_elchk_area_type2 {
+    visibility: hidden;
+  }
+
+  [id^="base_exp_label"] {
+    font-size: 15px;
+  }
+
+  [id^="el_check_type"] + label {
+    font-size: 15px;
   }
 }
 
@@ -183,11 +222,13 @@
     width: 80px;
   }
 
+  #event_period,
+  #normal_link,
   #how_to {
     font-size: 14px;
   }
 
-  #lap_tips {
+  label[name="lap_tips"] {
     font-size: 14px;
   }
 
@@ -201,6 +242,18 @@
 
   .disp_columnL {
     width: 135;
+  }
+
+  #baseexp_elchk_area_type2 {
+    visibility: hidden;
+  }
+
+  [id^="base_exp_label"] {
+    font-size: 15px;
+  }
+
+  [id^="el_check_type"] + label {
+    font-size: 15px;
   }
 }
 
@@ -240,7 +293,7 @@
     width: 105px;
   }
 
-  #lap_count_table {
+  [id^="lap_count_table"] {
     font-size: 13px;
   }
 
@@ -251,11 +304,14 @@
   .target_ymd {
     width: 65px;
   }
+
+  #event_period,
+  #normal_link,
   #how_to {
     font-size: 12px;
   }
 
-  #lap_tips {
+  label[name="lap_tips"] {
     font-size: 12px;
   }
 
@@ -269,5 +325,19 @@
 
   .disp_columnL {
     width: 105;
+  }
+
+  #baseexp_elchk_area_type2 {
+    visibility: unset;
+    margin-top: 15px;
+  }
+
+  [id^="base_exp_label"] {
+    font-size: 13px;
+  }
+
+  [id^="el_check_type"] + label {
+    font-size: 14px;
+    margin-left: -4px;
   }
 }

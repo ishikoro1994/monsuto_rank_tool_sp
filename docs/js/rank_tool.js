@@ -1,10 +1,10 @@
 var isDispTableBtn = false;
 var rankTable = [];
-var rapInfoArray = [];
 var maxRank = 0;
 var lastExp = 0;
 var lastExpDiff = 0;
-var lapTypeCount = 0;
+var lapTypeCountType1 = 0;
+var lapTypeCountType2 = 0;
 var baseExp = 0;
 var lapInfoList = [];
 var wakuwaku = 0; // 現在選択されている学び
@@ -27,8 +27,6 @@ const TOTAL_EXP = 'total_exp';
 const ID_TOTAL_EXP = '#' + TOTAL_EXP;
 const DAYS_LEFT = 'days_left';
 const ID_DAYS_LEFT = '#' + DAYS_LEFT;
-const LAP_COUNT_TBODY = 'lap_count_tbody';
-const ID_LAP_COUNT_TBODY = '#' + LAP_COUNT_TBODY;
 const NEED_EXP = 'need_exp';
 const ID_NEED_EXP = '#' + NEED_EXP;
 const DAYS_EXP = 'days_exp';
@@ -47,7 +45,9 @@ $(document).ready(function() {
     var d = new $.Deferred();
 
     wakuwaku = WAKUWAKU_MANABI
-    $('#base_exp_label').text(addFigure(DEFAULT_EXP) + 'に1.6(学び特L)を掛けた経験値を基に計算しています。');
+    let baseExpTxt = '基礎経験値を' + addFigure(DEFAULT_EXP) + '× 1.6(学び特L)として計算';
+    $('#base_exp_label_type1').text(baseExpTxt);
+    $('#base_exp_label_type2').text(baseExpTxt);
     baseExp = Number(WAKUWAKU_MANABI * DEFAULT_EXP);
 
     async(function() {
@@ -73,11 +73,41 @@ $(document).ready(function() {
             setInitVal(TARGET_RANK);
             $(ID_TARGET_EXP).text(addFigure(calcRankToExp(ID_TARGET_RANK)));
 
-            // 目標年月日設定
+            // イベント期間について
+            let eventFrom = new Date(2022, (12 - 1), 26, 0, 0, 0);
+            let eventTo = new Date(2023, (1 - 1), 9);
+            let fromTxt = eventFrom.getFullYear() + '年' + (eventFrom.getMonth() + 1) + '月' + eventFrom.getDate() + '日';
+            let toTxt = eventTo.getFullYear() + '年' + (eventTo.getMonth() + 1) + '月' + eventTo.getDate() + '日';
+            $('#event_period_lbl').text('イベント期間は' + fromTxt + 'から' + toTxt + 'までです。');
+
             var today = new Date();
-            $(ID_TARGET_YEAR).text('2022');
-            $(ID_TARGET_MONTH).text('10');
-            $(ID_TARGET_DAY).text('31');
+            let targetY = today.getFullYear();
+            let targetM = today.getMonth() + 1;
+            let targetD = today.getDate();
+
+            if (today >= eventFrom && today <= eventTo) {
+                // イベント期間内
+                targetY = eventTo.getFullYear();
+                targetM = eventTo.getMonth() + 1;
+                targetD = eventTo.getDate();
+                $('#out_ob_term_lbl').css('display', 'none');
+                $('#normal_link').css('display', 'none');
+            }
+
+            // 目標年月日設定
+            // 目標年プルダウン設定
+            createNumPulldownOption(TARGET_YEAR, today.getFullYear(), today.getFullYear() + 10);
+            // 目標月プルダウン設定
+            createNumPulldownOption(TARGET_MONTH, MIN_MONTH, MAX_MONTH);
+            // 目標月プルダウン設定
+            createNumPulldownOption(TARGET_DAY, MIN_DAY, MAX_DAY);
+            // 目標年
+            setInitVal(TARGET_YEAR, false, targetY);
+            // 目標月
+            setInitVal(TARGET_MONTH, false, targetM);
+            // 目標日
+            changeDay();
+            setInitVal(TARGET_DAY, false, targetD);
 
             // 現在のランク
             setInitVal(NOW_RANK);
@@ -152,6 +182,38 @@ function blurTotalExp() {
 }
 
 /**
+ * 目標年変更イベント
+ */
+ function changeTargetYear() {
+    convertNum(TARGET_YEAR);
+    changeDay();
+    calcAll();
+    // ツイートボタン生成
+    setTweetButton();
+}
+
+/**
+ * 目標月変更イベント
+ */
+function changeTargetMonth() {
+    convertNum(TARGET_MONTH);
+    changeDay();
+    calcAll();
+    // ツイートボタン生成
+    setTweetButton();
+}
+
+/**
+ * 目標日変更イベント
+ */
+function changeTargetDay() {
+    convertNum(TARGET_DAY);
+    calcAll();
+    // ツイートボタン生成
+    setTweetButton();
+}
+
+/**
  * 数値変換
  */
 function convertNum(id) {
@@ -168,9 +230,9 @@ function convertNum(id) {
  * 残り日数算出
  */
 function calcDaysLeft() {
-    var y = $(ID_TARGET_YEAR).text();
-    var m = $(ID_TARGET_MONTH).text();
-    var d = $(ID_TARGET_DAY).text();
+    var y = $(ID_TARGET_YEAR).val();
+    var m = $(ID_TARGET_MONTH).val();
+    var d = $(ID_TARGET_DAY).val();
     if (!y || !m || !d) {
         return;
     }
@@ -234,9 +296,13 @@ function makeLapInfoArrayList(data) {
  * 周回数再表示
  */
  function makeLapCount() {
-    $(ID_LAP_COUNT_TBODY).empty();
-    rapInfoArray = [];
+    $('#lap_count_tbody_type1').empty();
+    $('#lap_count_tbody_type2').empty();
+    var rapInfoArray = [];
 
+    // 討伐数
+    rapInfoArray = [];
+    lapTypeCountType1 = 0;
     // １行を配列に変換
     for(var i = 0; i < lapInfoList.length; i++){
         rapInfoArray.push(lapInfoList[i].split(","));
@@ -255,17 +321,55 @@ function makeLapInfoArrayList(data) {
         var rowStr = '';
         rowStr += '<tr>';
         // 学びスポ
-        rowStr += '<td id="lap_spot'+ i +'">' + rapInfoArray[i][0] + '</td>';
+        rowStr += '<td id="lap_spot'+ lapTypeCountType1 +'_type1">' + rapInfoArray[i][0] + '</td>';
         // 1周経験値
-        rowStr += '<td id="lap_exp'+ i +'">' + expMagStr + '</td>';
+        rowStr += '<td id="lap_exp'+ lapTypeCountType1 +'_type1">' + expMagStr + '</td>';
         // 1日分
-        rowStr += '<td id="lap_one_day' + i + '"></td>';
+        rowStr += '<td id="lap_one_day' + lapTypeCountType1 + '_type1"></td>';
         // 目標まで
-        rowStr += '<td id="lap_goal' + i + '"></td>';
+        rowStr += '<td id="lap_goal' + lapTypeCountType1 + '_type1"></td>';
         rowStr += '</tr>';
-        $(ID_LAP_COUNT_TBODY).append(rowStr);
+        $('#lap_count_tbody_type1').append(rowStr);
 
-        lapTypeCount++;
+        lapTypeCountType1++;
+    }
+
+    // 周回数
+    rapInfoArray = [];
+    lapTypeCountType2 = 0;
+    // １行を配列に変換
+    for(var j = 3; j > 0; j--){
+        for(var i = 0; i < lapInfoList.length; i++){
+            rapInfoArray.push(lapInfoList[i].split(","));
+            var expMag = rapInfoArray[i][1];
+            expMag = parseFloat(expMag) * wakuwaku * j;
+            var expMagStr = addFigure(expMag);
+            var needExp = $(ID_NEED_EXP).text();
+
+            if (!needExp) {
+                expMag = '';
+            }
+
+            // 必要経験値カンマ外し
+            needExp = delFigure(needExp);
+
+            var rowStr = '';
+            rowStr += '<tr>';
+            // 出現数
+            rowStr += '<td id="lap_occurrences'+ lapTypeCountType2 +'_type2">' + j + '体</td>';
+            // 学びスポ
+            rowStr += '<td id="lap_spot'+ lapTypeCountType2 +'_type2">' + rapInfoArray[i][0] + '</td>';
+            // 1周経験値
+            rowStr += '<td id="lap_exp'+ lapTypeCountType2 +'_type2">' + expMagStr + '</td>';
+            // 1日分
+            rowStr += '<td id="lap_one_day' + lapTypeCountType2 + '_type2"></td>';
+            // 目標まで
+            rowStr += '<td id="lap_goal' + lapTypeCountType2 + '_type2"></td>';
+            rowStr += '</tr>';
+            $('#lap_count_tbody_type2').append(rowStr);
+
+            lapTypeCountType2++;
+        }
     }
 }
 
@@ -431,24 +535,36 @@ function calcExp() {
     // 1日目標経験値カンマ外し
     daysExp = Number(delFigure(daysExp));
 
-    for (var i = 0; i < lapTypeCount; i++) {
+    for (var i = 0; i < lapTypeCountType1; i++) {
         // 1周経験値
-        var lapExp = $('#lap_exp' + i).text();
+        var lapExp = $('#lap_exp' + i + '_type1').text();
         lapExp = Number(delFigure(lapExp));
         // 目標まで
         var lapGoal = Math.ceil(needExp / lapExp);
-        $('#lap_goal' + i).text(addFigure(lapGoal));
+        $('#lap_goal' + i + '_type1').text(addFigure(lapGoal));
         // 1日分
         var lapOneDay = Math.ceil(daysExp / lapExp);
-        $('#lap_one_day' + i).text(addFigure(lapOneDay));
+        $('#lap_one_day' + i + '_type1').text(addFigure(lapOneDay));
+    }
+
+    for (var i = 0; i < lapTypeCountType2; i++) {
+        // 1周経験値
+        var lapExp = $('#lap_exp' + i + '_type2').text();
+        lapExp = Number(delFigure(lapExp));
+        // 目標まで
+        var lapGoal = Math.ceil(needExp / lapExp);
+        $('#lap_goal' + i + '_type2').text(addFigure(lapGoal));
+        // 1日分
+        var lapOneDay = Math.ceil(daysExp / lapExp);
+        $('#lap_one_day' + i + '_type2').text(addFigure(lapOneDay));
     }
 }
 
 // 目標月日プルダウン選択項目変更
 function changeDay() {
-    var targetYear = $(ID_TARGET_YEAR).text();
-    var targetMonth = $(ID_TARGET_MONTH).text();
-    var targetDay = $(ID_TARGET_DAY).text();
+    var targetYear = $(ID_TARGET_YEAR).val();
+    var targetMonth = $(ID_TARGET_MONTH).val();
+    var targetDay = $(ID_TARGET_DAY).val();
     var lastDate = new Date(targetYear, targetMonth, 0);
 
     $(ID_TARGET_DAY + ' option').remove();
@@ -536,16 +652,32 @@ function setTweetButton(){
 /**
  * 学びELチェック
  */
-function changeElCheck(){
+function changeElCheck(type) {
     let exp = DEFAULT_EXP;
     wakuwaku = WAKUWAKU_MANABI;
     let wakuwakuLabel = '1.6(学び特L)';
-    if ($('#el_check').prop("checked")){
-        wakuwaku = WAKUWAKU_MANABI_EL;
-        wakuwakuLabel = '1.65(学び特EL)';
+
+    if (type == 1) {
+        if ($('#el_check_type1').prop('checked')){
+            wakuwaku = WAKUWAKU_MANABI_EL;
+            wakuwakuLabel = '1.65(学び特EL)';
+            $('#el_check_type2').prop('checked', true);
+        } else {
+            $('#el_check_type2').prop('checked', false);
+        }
     }
-    $('#base_exp_label').text('の経験値は' + addFigure(exp) + wakuwakuLabel);
-    $('#base_exp_label').text(addFigure(DEFAULT_EXP) + 'に' + wakuwakuLabel + 'を掛けた経験値を基に計算しています。');
+    else if (type == 2) {
+        if ($('#el_check_type2').prop('checked')){
+            wakuwaku = WAKUWAKU_MANABI_EL;
+            wakuwakuLabel = '1.65(学び特EL)';
+            $('#el_check_type1').prop('checked', true);
+        } else {
+            $('#el_check_type1').prop('checked', false);
+        }
+    }
+    let baseExpTxt = '基礎経験値を' + addFigure(DEFAULT_EXP) + '× ' + wakuwakuLabel + 'として計算';
+    $('#base_exp_label_type1').text(baseExpTxt);
+    $('#base_exp_label_type2').text(baseExpTxt);
     baseExp = Number(wakuwaku * exp);
     makeLapCount();
     calcAll();

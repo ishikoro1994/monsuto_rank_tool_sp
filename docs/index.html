@@ -33,7 +33,9 @@
                 <td id="target_exp_label">目標経験値</td>
                 <td id="target_exp" class="disp_columnL"></td>
                 <td id="target_year_label">目標年</td>
-                <td id="target_year" class="disp_columnR" tabindex="3"></td>
+                <td>
+                    <select id="target_year" class="select_column target_ymd" tabindex="3" onchange="changeTargetYear();">
+                </td>
             </tr>
             <tr>
                 <td id="total_exp_label">累計経験値</td>
@@ -41,13 +43,17 @@
                     <input type="tel" id="total_exp" maxlength="11" tabindex="2" class="input_column" onchange="changeTotalExp();" onfocus="focusTotalExp();" onblur="blurTotalExp();">
                 </td>
                 <td id="target_month_label">目標月</td>
-                <td id="target_month" class="disp_columnR" tabindex="4"></td>
+                <td>
+                    <select id="target_month" class="select_column target_ymd" tabindex="4" onchange="changeTargetMonth();">
+                </td>
             </tr>
             <tr>
                 <td id="need_exp_label">必要経験値</td>
                 <td id="need_exp" class="disp_columnL"></td>
                 <td id="target_day_label">目標日</td>
-                <td id="target_day" class="disp_columnR" tabindex="5"></td>
+                <td>
+                    <select id="target_day" class="select_column target_ymd" tabindex="5" onchange="changeTargetDay();">
+                </td>
             </tr>
             <tr>
                 <td id="days_exp_label">1日目標経験値</td>
@@ -56,6 +62,13 @@
                 <td id="days_left" class="disp_columnR"></td>
             </tr>
         </table>
+        <p id="event_period">
+            <label id="event_period_lbl"></label>
+            </br>
+            <label id="out_ob_term_lbl">現在はイベント期間外のためノマクエ版をご利用ください。</label>
+            </br>
+            <a id="normal_link" href="https://ishikoro1994.github.io/monsuto_rank_tool/">ノマクエ版</a>
+        </p>
         <p id="how_to">
             <label>※目標ランクを設定してください。<br></label>
             <label>　現在のランクまたは累計経験値を入力してください。(自動計算)<br></label>
@@ -68,27 +81,55 @@
                 <div id="tweet_area"></div>
             </div>
         </p>
-        <div style="font-weight:bold;">けいウサ必要討伐数</div>
-        <div>
-            <label id="base_exp_label">66,000に1.6(学び特L)を掛けた経験値を基に計算しています。</label>
-        </br>
-        <input id="el_check" type="checkbox" onchange="changeElCheck();"/>
-        <label for="el_check">学びELを有効化</label>
-    </div>
-        <table border="1" id="lap_count_table">
-            <thead style="text-align: center;">
-                <tr>
-                    <th>学びスポ倍率</th>
-                    <th>1体経験値</th>
-                    <th>1日分</th>
-                    <th>目標まで</th>
-                </tr>
-            </thead>
-            <tbody id="lap_count_tbody"></tbody>
-        </table>
-        <p id="lap_tips">
-            <label>「1日分」・「目標まで」は討伐数を表しています。</label>
-        </p>
+        <div id="lap_info">
+            <div id="lap_type1">
+                <div id="baseexp_elchk_area_type1">
+                    <label id="base_exp_label_type1"></label>
+                    </br>
+                    <p name="el_check">
+                        <input id="el_check_type1" type="checkbox" onchange="changeElCheck(1);"/>
+                        <label for="el_check_type1">学びELを有効化</label>
+                    </p>
+                </div>
+                <div style="font-weight:bold;">けいウサ必要討伐数</div>
+                <label name="lap_tips">「1日分」・「目標まで」は討伐数を表しています。</label>
+                <table border="1" id="lap_count_table_type1">
+                    <thead style="text-align: center;">
+                        <tr>
+                            <th>学びスポ倍率</th>
+                            <th>1体経験値</th>
+                            <th>1日分</th>
+                            <th>目標まで</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lap_count_tbody_type1"></tbody>
+                </table>
+            </div>
+            <div id="lap_type2">
+                <div id="baseexp_elchk_area_type2">
+                    <label id="base_exp_label_type2"></label>
+                    </br>
+                    <p name="el_check">
+                        <input id="el_check_type2" type="checkbox" onchange="changeElCheck(2);"/>
+                        <label for="el_check_type2">学びELを有効化</label>
+                    </p>
+                </div>
+                <div style="font-weight:bold;">クエスト周回数</div>
+                <label name="lap_tips">「1日分」・「目標まで」は周回数を表しています。</label>
+                <table border="1" id="lap_count_table_type2">
+                    <thead style="text-align: center;">
+                        <tr>
+                            <th>出現数</th>
+                            <th>学びスポ倍率</th>
+                            <th>1周経験値</th>
+                            <th>1日分</th>
+                            <th>目標まで</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lap_count_tbody_type2"></tbody>
+                </table>
+            </div>
+        </div>
         <div id="contact">
             <label style="color: red;">質問・相談は作成者twitterまでご連絡ください。</label><br>
             <a title="@ishikoro1994をフォロー" href="https://twitter.com/ishikoro1994?ref_src=twsrc%5Etfw" data-lang="ja" class="twitter-follow-button" data-show-count="true">
