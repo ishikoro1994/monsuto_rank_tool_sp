@@ -73,12 +73,12 @@ $(document).ready(function() {
             let dayFrom = 13;
             let yearTo = 2023;
             let monthTo = 9;
-            let dayTo = 4;
+            let dayTo = 2;
             let eventFrom = new Date(yearFrom, (monthFrom - 1), dayFrom, 0, 0, 0);
             let eventTo = new Date(yearTo, (monthTo - 1), dayTo);
             let fromTxt = eventFrom.getFullYear() + '年' + (eventFrom.getMonth() + 1) + '月' + eventFrom.getDate() + '日';
             let toTxt = eventTo.getFullYear() + '年' + (eventTo.getMonth() + 1) + '月' + eventTo.getDate() + '日';
-            $('#event_period_lbl').text('イベント期間は' + fromTxt + ' ～ ' + toTxt + '(タイムシフト込み)');
+            $('#event_period_lbl').text('イベント期間は' + fromTxt + ' ～ ' + toTxt + '(タイムシフト除く)');
 
             var today = new Date();
             let targetY = today.getFullYear();
