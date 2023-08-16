@@ -65,17 +65,13 @@
 }
 
 /*周回数テーブル 説明*/
-label[name="lap_tips"] {
+#lap_tips {
   margin-top: initial;
 }
 
 /*シェアラベル*/
 #tweet_label {
   float: left;
-}
-
-#lap_type1 {
-  width: 370px;
 }
 
 p[name="el_check"] {
@@ -145,7 +141,11 @@ p[name="el_check"] {
     font-size: 14px;
   }
 
-  label[name="lap_tips"] {
+  #baseexp_elchk_area {
+    font-size: 15px;
+  }
+
+  #lap_tips {
     font-size: 14px;
   }
 
@@ -159,22 +159,6 @@ p[name="el_check"] {
 
   .disp_columnL {
     width: 135;
-  }
-
-  #lap_type1 {
-    float: left;
-  }
-
-  #baseexp_elchk_area_type2 {
-    visibility: hidden;
-  }
-
-  [id^="base_exp_label"] {
-    font-size: 15px;
-  }
-
-  [id^="el_check_type"] + label {
-    font-size: 15px;
   }
 }
 
@@ -228,7 +212,11 @@ p[name="el_check"] {
     font-size: 14px;
   }
 
-  label[name="lap_tips"] {
+  #baseexp_elchk_area {
+    font-size: 15px;
+  }
+
+  #lap_tips {
     font-size: 14px;
   }
 
@@ -242,18 +230,6 @@ p[name="el_check"] {
 
   .disp_columnL {
     width: 135;
-  }
-
-  #baseexp_elchk_area_type2 {
-    visibility: hidden;
-  }
-
-  [id^="base_exp_label"] {
-    font-size: 15px;
-  }
-
-  [id^="el_check_type"] + label {
-    font-size: 15px;
   }
 }
 
@@ -294,7 +270,7 @@ p[name="el_check"] {
   }
 
   [id^="lap_count_table"] {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .select_column {
@@ -311,7 +287,11 @@ p[name="el_check"] {
     font-size: 12px;
   }
 
-  label[name="lap_tips"] {
+  #baseexp_elchk_area {
+    font-size: 13px;
+  }
+
+  #lap_tips {
     font-size: 12px;
   }
 
@@ -325,19 +305,5 @@ p[name="el_check"] {
 
   .disp_columnL {
     width: 105;
-  }
-
-  #baseexp_elchk_area_type2 {
-    visibility: unset;
-    margin-top: 15px;
-  }
-
-  [id^="base_exp_label"] {
-    font-size: 13px;
-  }
-
-  [id^="el_check_type"] + label {
-    font-size: 14px;
-    margin-left: -4px;
   }
 }

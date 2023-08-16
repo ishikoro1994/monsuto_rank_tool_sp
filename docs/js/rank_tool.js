@@ -3,14 +3,14 @@ var rankTable = [];
 var maxRank = 0;
 var lastExp = 0;
 var lastExpDiff = 0;
-var lapTypeCountType1 = 0;
-var lapTypeCountType2 = 0;
-var baseExp = 0;
+var lapTypeCount = 0;
 var lapInfoList = [];
 var wakuwaku = 0; // 現在選択されている学び
 const DEFAULT_EXP = 66000;
+const COLLABO_MAG = 20;
 const WAKUWAKU_MANABI = 1.6;
 const WAKUWAKU_MANABI_EL = 1.65;
+const HOUR_LAP = 50;
 const MIN_MONTH = 1;
 const MAX_MONTH = 12;
 const MIN_DAY = 1;
@@ -44,11 +44,9 @@ const ID_NOW_RANK = '#' + NOW_RANK;
 $(document).ready(function() {
     var d = new $.Deferred();
 
-    wakuwaku = WAKUWAKU_MANABI
-    let baseExpTxt = '基礎経験値を' + addFigure(DEFAULT_EXP) + '× 1.6(学び特L)として計算';
-    $('#base_exp_label_type1').text(baseExpTxt);
-    $('#base_exp_label_type2').text(baseExpTxt);
-    baseExp = Number(WAKUWAKU_MANABI * DEFAULT_EXP);
+    wakuwaku = WAKUWAKU_MANABI_EL
+    let baseExpTxt = '難易度毎の経験値 x 経験値倍率20倍 × 1.65(学び特EL)で計算';
+    $('#base_exp_label').text(baseExpTxt);
 
     async(function() {
         loadRankTableCsv();
@@ -65,20 +63,22 @@ $(document).ready(function() {
             return d2.promise();
         })
         .then(function() {
-            // 目標ランク初期選択
-            // $(ID_TARGET_RANK).val(1);
-
-            // Cookieから前回入力時の値を取得
             // 目標ランク
             setInitVal(TARGET_RANK);
             $(ID_TARGET_EXP).text(addFigure(calcRankToExp(ID_TARGET_RANK)));
 
             // イベント期間について
-            let eventFrom = new Date(2022, (12 - 1), 26, 0, 0, 0);
-            let eventTo = new Date(2023, (1 - 1), 9);
+            let yearFrom = 2023;
+            let monthFrom = 8;
+            let dayFrom = 13;
+            let yearTo = 2023;
+            let monthTo = 9;
+            let dayTo = 4;
+            let eventFrom = new Date(yearFrom, (monthFrom - 1), dayFrom, 0, 0, 0);
+            let eventTo = new Date(yearTo, (monthTo - 1), dayTo);
             let fromTxt = eventFrom.getFullYear() + '年' + (eventFrom.getMonth() + 1) + '月' + eventFrom.getDate() + '日';
             let toTxt = eventTo.getFullYear() + '年' + (eventTo.getMonth() + 1) + '月' + eventTo.getDate() + '日';
-            $('#event_period_lbl').text('イベント期間は' + fromTxt + 'から' + toTxt + 'までです。');
+            $('#event_period_lbl').text('イベント期間は' + fromTxt + ' ～ ' + toTxt + '(タイムシフト込み)');
 
             var today = new Date();
             let targetY = today.getFullYear();
@@ -296,18 +296,17 @@ function makeLapInfoArrayList(data) {
  * 周回数再表示
  */
  function makeLapCount() {
-    $('#lap_count_tbody_type1').empty();
-    $('#lap_count_tbody_type2').empty();
+    $('#lap_count_tbody').empty();
     var rapInfoArray = [];
 
     // 討伐数
     rapInfoArray = [];
-    lapTypeCountType1 = 0;
+    lapTypeCount = 0;
     // １行を配列に変換
     for(var i = 0; i < lapInfoList.length; i++){
         rapInfoArray.push(lapInfoList[i].split(","));
         var expMag = rapInfoArray[i][1];
-        expMag = parseFloat(expMag) * wakuwaku;
+        expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku) * 20;
         var expMagStr = addFigure(expMag);
         var needExp = $(ID_NEED_EXP).text();
 
@@ -320,56 +319,24 @@ function makeLapInfoArrayList(data) {
 
         var rowStr = '';
         rowStr += '<tr>';
+        // 難易度
+        rowStr += '<td id="lap_difficulty'+ lapTypeCount +'">' + rapInfoArray[i][0] + '</td>';
         // 学びスポ
-        rowStr += '<td id="lap_spot'+ lapTypeCountType1 +'_type1">' + rapInfoArray[i][0] + '</td>';
+        rowStr += '<td id="lap_spot'+ lapTypeCount +'">' + rapInfoArray[i][2] + '</td>';
         // 1周経験値
-        rowStr += '<td id="lap_exp'+ lapTypeCountType1 +'_type1">' + expMagStr + '</td>';
+        rowStr += '<td id="lap_exp'+ lapTypeCount +'">' + expMagStr + '</td>';
         // 1日分
-        rowStr += '<td id="lap_one_day' + lapTypeCountType1 + '_type1"></td>';
+        rowStr += '<td id="lap_one_day' + lapTypeCount + '"></td>';
         // 目標まで
-        rowStr += '<td id="lap_goal' + lapTypeCountType1 + '_type1"></td>';
+        rowStr += '<td id="lap_goal' + lapTypeCount + '"></td>';
+        // 1日分(h)
+        rowStr += '<td id="lap_one_day_h' + lapTypeCount + '"></td>';
+        // 目標まで(h)
+        rowStr += '<td id="lap_goal_h' + lapTypeCount + '"></td>';
         rowStr += '</tr>';
-        $('#lap_count_tbody_type1').append(rowStr);
+        $('#lap_count_tbody').append(rowStr);
 
-        lapTypeCountType1++;
-    }
-
-    // 周回数
-    rapInfoArray = [];
-    lapTypeCountType2 = 0;
-    // １行を配列に変換
-    for(var j = 3; j > 0; j--){
-        for(var i = 0; i < lapInfoList.length; i++){
-            rapInfoArray.push(lapInfoList[i].split(","));
-            var expMag = rapInfoArray[i][1];
-            expMag = parseFloat(expMag) * wakuwaku * j;
-            var expMagStr = addFigure(expMag);
-            var needExp = $(ID_NEED_EXP).text();
-
-            if (!needExp) {
-                expMag = '';
-            }
-
-            // 必要経験値カンマ外し
-            needExp = delFigure(needExp);
-
-            var rowStr = '';
-            rowStr += '<tr>';
-            // 出現数
-            rowStr += '<td id="lap_occurrences'+ lapTypeCountType2 +'_type2">' + j + '体</td>';
-            // 学びスポ
-            rowStr += '<td id="lap_spot'+ lapTypeCountType2 +'_type2">' + rapInfoArray[i][0] + '</td>';
-            // 1周経験値
-            rowStr += '<td id="lap_exp'+ lapTypeCountType2 +'_type2">' + expMagStr + '</td>';
-            // 1日分
-            rowStr += '<td id="lap_one_day' + lapTypeCountType2 + '_type2"></td>';
-            // 目標まで
-            rowStr += '<td id="lap_goal' + lapTypeCountType2 + '_type2"></td>';
-            rowStr += '</tr>';
-            $('#lap_count_tbody_type2').append(rowStr);
-
-            lapTypeCountType2++;
-        }
+        lapTypeCount++;
     }
 }
 
@@ -390,7 +357,7 @@ function makeLapInfoArrayList(data) {
     // 数値でなければそのまま返却
     if ( !/^[+|-]?(\d*)(\.\d+)?$/.test(numVal) ){
         return numVal;
-　　}
+    }
     // 整数部分と小数部分に分割
     var numData = numVal.toString().split('.');
     // 整数部分を3桁カンマ区切りへ
@@ -535,28 +502,26 @@ function calcExp() {
     // 1日目標経験値カンマ外し
     daysExp = Number(delFigure(daysExp));
 
-    for (var i = 0; i < lapTypeCountType1; i++) {
+    for (var i = 0; i < lapTypeCount; i++) {
         // 1周経験値
-        var lapExp = $('#lap_exp' + i + '_type1').text();
+        var lapExp = $('#lap_exp' + i).text();
         lapExp = Number(delFigure(lapExp));
         // 目標まで
         var lapGoal = Math.ceil(needExp / lapExp);
-        $('#lap_goal' + i + '_type1').text(addFigure(lapGoal));
+        $('#lap_goal' + i).text(addFigure(lapGoal));
         // 1日分
         var lapOneDay = Math.ceil(daysExp / lapExp);
-        $('#lap_one_day' + i + '_type1').text(addFigure(lapOneDay));
-    }
-
-    for (var i = 0; i < lapTypeCountType2; i++) {
-        // 1周経験値
-        var lapExp = $('#lap_exp' + i + '_type2').text();
-        lapExp = Number(delFigure(lapExp));
-        // 目標まで
-        var lapGoal = Math.ceil(needExp / lapExp);
-        $('#lap_goal' + i + '_type2').text(addFigure(lapGoal));
-        // 1日分
-        var lapOneDay = Math.ceil(daysExp / lapExp);
-        $('#lap_one_day' + i + '_type2').text(addFigure(lapOneDay));
+        $('#lap_one_day' + i).text(addFigure(lapOneDay));
+        // 目標まで(h)
+        var lapGoalH = Math.ceil(lapGoal * 10 / HOUR_LAP) / 10;
+        lapGoalH = lapGoalH.toFixed(1);
+        lapGoalH = addFigure(lapGoalH);
+        $('#lap_goal_h' + i).text(lapGoalH);
+        // 1日分(h)
+        var lapOneDayH = Math.ceil(lapOneDay * 10 / HOUR_LAP) / 10;
+        lapOneDayH = lapOneDayH.toFixed(1);
+        lapOneDayH = addFigure(lapOneDayH);
+        $('#lap_one_day_h' + i).text(addFigure(lapOneDayH));
     }
 }
 
@@ -631,7 +596,7 @@ function setTweetButton(){
         text += '(推定)';
     }
     text += '\n';
-    text += '【目標日】' + $(ID_TARGET_YEAR).text() + '年' + $(ID_TARGET_MONTH).text() + '月' + $(ID_TARGET_DAY).text() + '日' + '\n';
+    text += '【目標日】' + $(ID_TARGET_YEAR).val() + '年' + $(ID_TARGET_MONTH).val() + '月' + $(ID_TARGET_DAY).val() + '日' + '\n';
     text += '目標までに必要な経験値は ' + $(ID_NEED_EXP).text() + '\n';
     text += '毎日 ' + $(ID_DAYS_EXP).text() + ' 獲得すれば達成可能！';
 
@@ -643,7 +608,7 @@ function setTweetButton(){
       {
         text: text, // 狙ったテキスト
         url: 'https://ishikoro1994.github.io/monsuto_rank_tool_sp/',
-        hashtags: 'モンスト,モンスト目標宣言,けいウサ',
+        hashtags: 'モンスト,モンスト目標宣言,SAOコラボ',
         lang: 'ja'
       }
     );
@@ -652,33 +617,18 @@ function setTweetButton(){
 /**
  * 学びELチェック
  */
-function changeElCheck(type) {
+function changeElCheck() {
     let exp = DEFAULT_EXP;
     wakuwaku = WAKUWAKU_MANABI;
     let wakuwakuLabel = '1.6(学び特L)';
 
-    if (type == 1) {
-        if ($('#el_check_type1').prop('checked')){
-            wakuwaku = WAKUWAKU_MANABI_EL;
-            wakuwakuLabel = '1.65(学び特EL)';
-            $('#el_check_type2').prop('checked', true);
-        } else {
-            $('#el_check_type2').prop('checked', false);
-        }
+    if ($('#el_check').prop("checked")){
+        wakuwaku = WAKUWAKU_MANABI_EL;
+        wakuwakuLabel = '1.65(学び特EL)';
     }
-    else if (type == 2) {
-        if ($('#el_check_type2').prop('checked')){
-            wakuwaku = WAKUWAKU_MANABI_EL;
-            wakuwakuLabel = '1.65(学び特EL)';
-            $('#el_check_type1').prop('checked', true);
-        } else {
-            $('#el_check_type1').prop('checked', false);
-        }
-    }
-    let baseExpTxt = '基礎経験値を' + addFigure(DEFAULT_EXP) + '× ' + wakuwakuLabel + 'として計算';
-    $('#base_exp_label_type1').text(baseExpTxt);
-    $('#base_exp_label_type2').text(baseExpTxt);
-    baseExp = Number(wakuwaku * exp);
+
+    let baseExpTxt = '難易度毎の経験値 x 経験値倍率20倍 × ' + wakuwakuLabel + 'で計算';
+    $('#base_exp_label').text(baseExpTxt);
     makeLapCount();
     calcAll();
 }
