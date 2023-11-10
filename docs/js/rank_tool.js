@@ -12,6 +12,8 @@ const DEFAULT_EXP = 66000;
 const COLLABO_MAG = 20;
 const WAKUWAKU_MANABI = 1.6;
 const WAKUWAKU_MANABI_EL = 1.65;
+const BASE_EXP = 2200;
+const KEIUSA_BONUS = 30;
 const HOUR_LAP = 50;
 const MIN_MONTH = 1;
 const MAX_MONTH = 12;
@@ -39,6 +41,8 @@ const OVER_RANK_MSG = 'over_rank_msg';
 const ID_OVER_RANK_MSG = '#' + OVER_RANK_MSG;
 const NOW_RANK = 'now_rank';
 const ID_NOW_RANK = '#' + NOW_RANK;
+const BASE_EXP_LABEL_OPEN = '▼基礎経験値詳細';
+const BASE_EXP_LABEL_CLOSE = '▲基礎経験値詳細';
 
 /**
  * ページ読み込み時
@@ -48,6 +52,7 @@ $(document).ready(function() {
 
     wakuwaku = WAKUWAKU_MANABI_EL
     let baseExpTxt = '基礎経験値を' + addFigure(DEFAULT_EXP) + '× 1.65(学び特EL)として計算';
+    // let baseExpTxt = BASE_EXP_LABEL_OPEN;
     $('#base_exp_label_type1').text(baseExpTxt);
     $('#base_exp_label_type2').text(baseExpTxt);
     baseExp = Number(WAKUWAKU_MANABI * DEFAULT_EXP);
@@ -310,8 +315,7 @@ function makeLapInfoArrayList(data) {
     // １行を配列に変換
     for(var i = 0; i < lapInfoList.length; i++){
         rapInfoArray.push(lapInfoList[i].split(","));
-        var expMag = rapInfoArray[i][1];
-        expMag = parseFloat(expMag) * wakuwaku;
+        var expMag = Math.ceil(BASE_EXP * wakuwaku * rapInfoArray[i][1]) * KEIUSA_BONUS;
         var expMagStr = addFigure(expMag);
         var needExp = $(ID_NEED_EXP).text();
 
@@ -342,11 +346,10 @@ function makeLapInfoArrayList(data) {
     rapInfoArray = [];
     lapTypeCountType2 = 0;
     // １行を配列に変換
-    for(var j = 3; j > 0; j--){
+    for(var rabbitCnt = 3; rabbitCnt > 0; rabbitCnt--){
         for(var i = 0; i < lapInfoList.length; i++){
             rapInfoArray.push(lapInfoList[i].split(","));
-            var expMag = rapInfoArray[i][1];
-            expMag = parseFloat(expMag) * wakuwaku * j;
+            var expMag = Math.ceil(BASE_EXP * wakuwaku * rapInfoArray[i][1]) * (KEIUSA_BONUS * rabbitCnt);
             var expMagStr = addFigure(expMag);
             var needExp = $(ID_NEED_EXP).text();
 
@@ -360,7 +363,7 @@ function makeLapInfoArrayList(data) {
             var rowStr = '';
             rowStr += '<tr>';
             // 出現数
-            rowStr += '<td id="lap_occurrences'+ lapTypeCountType2 +'_type2">' + j + '体</td>';
+            rowStr += '<td id="lap_occurrences'+ lapTypeCountType2 +'_type2">' + rabbitCnt + '体</td>';
             // 学びスポ
             rowStr += '<td id="lap_spot'+ lapTypeCountType2 +'_type2">' + rapInfoArray[i][0] + '</td>';
             // 1周経験値
@@ -694,4 +697,17 @@ function changeElCheck(type) {
     baseExp = Number(wakuwaku * exp);
     makeLapCount();
     calcAll();
+}
+
+/**
+ * 基礎経験値詳細開閉
+ */
+function changeBaseExpLabel() {
+    if($('#base_exp_label_type1').text() == BASE_EXP_LABEL_OPEN) {
+        $('#base_exp_label_type1').text(BASE_EXP_LABEL_CLOSE);
+        $('#base_exp_label_type2').text(BASE_EXP_LABEL_CLOSE);
+    } else {
+        $('#base_exp_label_type1').text(BASE_EXP_LABEL_OPEN);
+        $('#base_exp_label_type2').text(BASE_EXP_LABEL_OPEN);
+    }
 }

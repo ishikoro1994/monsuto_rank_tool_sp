@@ -95,6 +95,11 @@ p[name="el_check"] {
   color: red;
 }
 
+/* [id^="base_exp_label"] {
+  color: blue;
+  text-decoration:underline;
+} */
+
 /*ウィンドウ幅が767px以上の場合に適用*/
 @media screen and (min-width: 1025px) {
   #update_msg,
