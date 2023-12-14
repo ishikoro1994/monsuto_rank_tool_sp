@@ -310,11 +310,18 @@ function makeLapInfoArrayList(data) {
     // 周回数
     rapInfoArray = [];
     lapTypeCount = 0;
+
+    // マルチのチェック状態によって経験値倍率変更
+    let multiExpMag = 1.0;
+    if ($('#multi_check')[0].checked) {
+        multiExpMag = 1.05;
+    }
+
     // １行を配列に変換
     for(var i = 0; i < lapInfoList.length; i++){
         rapInfoArray.push(lapInfoList[i].split(","));
         var expMag = rapInfoArray[i][1];
-        expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku) * COLLABO_MAG;
+        expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag) * COLLABO_MAG;
         var expMagStr = addFigure(expMag);
         var needExp = $(ID_NEED_EXP).text();
 
@@ -663,4 +670,12 @@ function changeBaseExpLabel() {
         $('#base_exp_label_type1').text(BASE_EXP_LABEL_OPEN);
         $('#base_exp_label_type2').text(BASE_EXP_LABEL_OPEN);
     }
+}
+
+/**
+ * マルチチェック
+ */
+function changeMultiCheck() {
+    makeLapCount();
+    calcAll();
 }

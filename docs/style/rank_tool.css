@@ -80,6 +80,12 @@ label[name="lap_tips"] {
 
 p[name="el_check"] {
   margin: unset;
+  display:inline-block;
+}
+
+p[name="multi_check"] {
+  margin: unset;
+  display:inline-block;
 }
 
 #contact {
