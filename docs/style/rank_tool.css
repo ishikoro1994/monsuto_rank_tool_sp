@@ -84,8 +84,8 @@ p[name="el_check"] {
 
 #contact {
   margin-top: 10px;
-  position: absolute;
-  top: 100%;
+  /* position: absolute;
+  top: 100%; */
 }
 
 #event_period {
