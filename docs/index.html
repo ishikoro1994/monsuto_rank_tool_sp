@@ -79,7 +79,7 @@
         </style>
     </head>
     <body>
-        <h1 id="head_title">モンスト　ランク計算ツール けいウサ版</h1>
+        <h1 id="head_title">モンスト　ランク計算ツール SPY×FAMILY版</h1>
         <label id="update_msg"></label>
         <label id="over_rank_msg"></label>
         <table border="1" id="main_info">
@@ -125,14 +125,7 @@
                 <td id="days_left_label">残り日数</td>
                 <td id="days_left" class="disp_columnR"></td>
             </tr>
-            <!-- <tr>
-                <td id="days_pase_label">本日の目標ランク</td>
-                <td id="days_pase" class="disp_columnL" colspan="3"></td>
-            </tr> -->
         </table>
-        <!-- <p id="dayas_pace">
-            <label id="dayas_pace_lbl">本日ランク：100まで上げるペースです。</label>
-        </p> -->
         <p id="event_period">
             <label id="event_period_lbl"></label>
             </br>
@@ -162,13 +155,14 @@
                         <label for="el_check_type1">学びELを有効化</label>
                     </p>
                 </div>
-                <div style="font-weight:bold;">けいウサ必要討伐数</div>
-                <label name="lap_tips">「1日分」・「目標まで」は討伐数を表しています。</label>
+                <div style="font-weight:bold;">クエスト周回数</div>
+                <label name="lap_tips">「1日分」・「目標まで」は周回数を表しています。</label>
                 <table border="1" id="lap_count_table_type1">
                     <thead style="text-align: center;">
                         <tr>
-                            <th>学びスポ倍率</th>
-                            <th>1体経験値</th>
+                            <th>難易度</th>
+                            <th>スポット</th>
+                            <th>1周経験値</th>
                             <th>1日分</th>
                             <th>目標まで</th>
                         </tr>
@@ -176,30 +170,7 @@
                     <tbody id="lap_count_tbody_type1"></tbody>
                 </table>
             </div>
-            <div id="lap_type2">
-                <div id="baseexp_elchk_area_type2">
-                    <label id="base_exp_label_type2"></label>
-                    </br>
-                    <p name="el_check">
-                        <input id="el_check_type2" type="checkbox" onchange="changeElCheck(2);" checked/>
-                        <label for="el_check_type2">学びELを有効化</label>
-                    </p>
-                </div>
-                <div style="font-weight:bold;">クエスト周回数</div>
-                <label name="lap_tips">「1日分」・「目標まで」は周回数を表しています。</label>
-                <table border="1" id="lap_count_table_type2">
-                    <thead style="text-align: center;">
-                        <tr>
-                            <th>出現数</th>
-                            <th>学びスポ倍率</th>
-                            <th>1周経験値</th>
-                            <th>1日分</th>
-                            <th>目標まで</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lap_count_tbody_type2"></tbody>
-                </table>
-            </div>
+        </div>
         <div id="contact">
             <label style="color: red;">質問・相談は作成者までご連絡ください。</label><br>
             <a title="@ishikoro1994をフォロー" href="https://twitter.com/ishikoro1994?ref_src=twsrc%5Etfw" data-lang="ja" class="twitter-follow-button" data-show-count="true">

@@ -75,7 +75,7 @@ label[name="lap_tips"] {
 }
 
 #lap_type1 {
-  width: 370px;
+  width: 100%;
 }
 
 p[name="el_check"] {
@@ -84,6 +84,8 @@ p[name="el_check"] {
 
 #contact {
   margin-top: 10px;
+  position: absolute;
+  top: 100%;
 }
 
 #event_period {
@@ -95,10 +97,9 @@ p[name="el_check"] {
   color: red;
 }
 
-/* [id^="base_exp_label"] {
-  color: blue;
-  text-decoration:underline;
-} */
+[id^="base_exp_label"] {
+  white-space: nowrap;
+}
 
 /*ウィンドウ幅が767px以上の場合に適用*/
 @media screen and (min-width: 1025px) {
