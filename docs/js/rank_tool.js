@@ -321,7 +321,8 @@ function makeLapInfoArrayList(data) {
     for(var i = 0; i < lapInfoList.length; i++){
         rapInfoArray.push(lapInfoList[i].split(","));
         var expMag = rapInfoArray[i][1];
-        expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag) * COLLABO_MAG;
+        // expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag) * COLLABO_MAG;
+        expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag * COLLABO_MAG);
         var expMagStr = addFigure(expMag);
         var needExp = $(ID_NEED_EXP).text();
 
