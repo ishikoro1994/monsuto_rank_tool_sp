@@ -8,7 +8,7 @@ var baseExp = 0;
 var lapInfoList = [];
 var wakuwaku = 0; // 現在選択されている学び
 const DEFAULT_EXP = 66000;
-const COLLABO_MAG = 40;
+const EVENT_MAG = 50;
 const WAKUWAKU_MANABI = 1.6;
 const WAKUWAKU_MANABI_EL = 1.65;
 const BASE_EXP = 2200;
@@ -50,7 +50,7 @@ $(document).ready(function() {
     var d = new $.Deferred();
 
     wakuwaku = WAKUWAKU_MANABI_EL
-    let baseExpTxt = '難易度毎の経験値 x 経験値倍率40倍 × 1.65(学び特EL)で計算';
+    let baseExpTxt = '難易度毎の経験値 x 経験値倍率' + EVENT_MAG.toString() + '倍 × 1.65(学び特EL)で計算';
 
     $('#base_exp_label_type1').text(baseExpTxt);
     //$('#base_exp_label_type2').text(baseExpTxt);
@@ -76,12 +76,12 @@ $(document).ready(function() {
             $(ID_TARGET_EXP).text(addFigure(calcRankToExp(ID_TARGET_RANK)));
 
             // イベント期間について
-            let yearFrom = 2023;
-            let monthFrom = 12;
-            let dayFrom = 15;
+            let yearFrom = 2024;
+            let monthFrom = 3;
+            let dayFrom = 2;
             let yearTo = 2024;
-            let monthTo = 1;
-            let dayTo = 3;
+            let monthTo = 3;
+            let dayTo = 18;
             let eventFrom = new Date(yearFrom, (monthFrom - 1), dayFrom, 0, 0, 0);
             let eventTo = new Date(yearTo, (monthTo - 1), dayTo);
             let fromTxt = eventFrom.getFullYear() + '年' + (eventFrom.getMonth() + 1) + '月' + eventFrom.getDate() + '日';
@@ -321,8 +321,8 @@ function makeLapInfoArrayList(data) {
     for(var i = 0; i < lapInfoList.length; i++){
         rapInfoArray.push(lapInfoList[i].split(","));
         var expMag = rapInfoArray[i][1];
-        // expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag) * COLLABO_MAG;
-        expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag * COLLABO_MAG);
+        // expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag) * EVENT_MAG;
+        expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag * EVENT_MAG);
         var expMagStr = addFigure(expMag);
         var needExp = $(ID_NEED_EXP).text();
 
