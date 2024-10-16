@@ -77,11 +77,11 @@ $(document).ready(function() {
 
             // イベント期間について
             let yearFrom = 2024;
-            let monthFrom = 3;
-            let dayFrom = 2;
+            let monthFrom = 10;
+            let dayFrom = 17;
             let yearTo = 2024;
-            let monthTo = 3;
-            let dayTo = 18;
+            let monthTo = 10;
+            let dayTo = 23;
             let eventFrom = new Date(yearFrom, (monthFrom - 1), dayFrom, 0, 0, 0);
             let eventTo = new Date(yearTo, (monthTo - 1), dayTo);
             let fromTxt = eventFrom.getFullYear() + '年' + (eventFrom.getMonth() + 1) + '月' + eventFrom.getDate() + '日';
@@ -318,38 +318,76 @@ function makeLapInfoArrayList(data) {
     }
 
     // １行を配列に変換
-    for(var i = 0; i < lapInfoList.length; i++){
-        rapInfoArray.push(lapInfoList[i].split(","));
-        var expMag = rapInfoArray[i][1];
-        // expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag) * EVENT_MAG;
-        expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag * EVENT_MAG);
-        var expMagStr = addFigure(expMag);
-        var needExp = $(ID_NEED_EXP).text();
+    // for(var i = 0; i < lapInfoList.length; i++){
+    //     rapInfoArray.push(lapInfoList[i].split(","));
+    //     var expMag = rapInfoArray[i][1];
+    //     // expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag) * EVENT_MAG;
+    //     expMag = Math.ceil(parseFloat(expMag) * parseFloat(rapInfoArray[i][2].replace('なし', '1.0')) * wakuwaku * multiExpMag * EVENT_MAG);
+    //     var expMagStr = addFigure(expMag);
+    //     var needExp = $(ID_NEED_EXP).text();
 
-        if (!needExp) {
-            expMag = '';
+    //     if (!needExp) {
+    //         expMag = '';
+    //     }
+
+    //     // 必要経験値カンマ外し
+    //     needExp = delFigure(needExp);
+
+    //     var rowStr = '';
+    //     rowStr += '<tr>';
+
+    //     // 難易度
+    //     rowStr += '<td id="lap_difficulty'+ lapTypeCount +'">' + rapInfoArray[i][0] + '</td>';
+    //     // 学びスポ
+    //     rowStr += '<td id="lap_spot'+ lapTypeCount +'">' + rapInfoArray[i][2] + '</td>';
+    //     // 1周経験値
+    //     rowStr += '<td id="lap_exp'+ lapTypeCount +'">' + expMagStr + '</td>';
+    //     // 1日分
+    //     rowStr += '<td id="lap_one_day' + lapTypeCount + '"></td>';
+    //     // 目標まで
+    //     rowStr += '<td id="lap_goal' + lapTypeCount + '"></td>';
+    //     rowStr += '</tr>';
+    //     $('#lap_count_tbody_type1').append(rowStr);
+
+    //     lapTypeCount++;
+    // }
+
+    // 周回数
+    rapInfoArray = [];
+    lapTypeCount = 0;
+    // １行を配列に変換
+    for(var rabbitCnt = 3; rabbitCnt > 0; rabbitCnt--){
+        for(var i = 0; i < lapInfoList.length; i++){
+            rapInfoArray.push(lapInfoList[i].split(","));
+            var expMag = Math.ceil(BASE_EXP * wakuwaku * multiExpMag * rapInfoArray[i][1]) * (KEIUSA_BONUS * rabbitCnt);
+
+            var expMagStr = addFigure(expMag);
+            var needExp = $(ID_NEED_EXP).text();
+
+            if (!needExp) {
+                expMag = '';
+            }
+
+            // 必要経験値カンマ外し
+            needExp = delFigure(needExp);
+
+            var rowStr = '';
+            rowStr += '<tr>';
+            // 出現数
+            rowStr += '<td id="lap_occurrences'+ lapTypeCount +'">' + rabbitCnt + '体</td>';
+            // 学びスポ
+            rowStr += '<td id="lap_spot'+ lapTypeCount +'">' + rapInfoArray[i][0] + '</td>';
+            // 1周経験値
+            rowStr += '<td id="lap_exp'+ lapTypeCount +'">' + expMagStr + '</td>';
+            // 1日分
+            rowStr += '<td id="lap_one_day' + lapTypeCount + '"></td>';
+            // 目標まで
+            rowStr += '<td id="lap_goal' + lapTypeCount + '"></td>';
+            rowStr += '</tr>';
+            $('#lap_count_tbody_type1').append(rowStr);
+
+            lapTypeCount++;
         }
-
-        // 必要経験値カンマ外し
-        needExp = delFigure(needExp);
-
-        var rowStr = '';
-        rowStr += '<tr>';
-
-        // 難易度
-        rowStr += '<td id="lap_difficulty'+ lapTypeCount +'">' + rapInfoArray[i][0] + '</td>';
-        // 学びスポ
-        rowStr += '<td id="lap_spot'+ lapTypeCount +'">' + rapInfoArray[i][2] + '</td>';
-        // 1周経験値
-        rowStr += '<td id="lap_exp'+ lapTypeCount +'">' + expMagStr + '</td>';
-        // 1日分
-        rowStr += '<td id="lap_one_day' + lapTypeCount + '"></td>';
-        // 目標まで
-        rowStr += '<td id="lap_goal' + lapTypeCount + '"></td>';
-        rowStr += '</tr>';
-        $('#lap_count_tbody_type1').append(rowStr);
-
-        lapTypeCount++;
     }
 }
 
@@ -620,7 +658,7 @@ function setTweetButton(){
       {
         text: text, // 狙ったテキスト
         url: 'https://ishikoro1994.github.io/monsuto_rank_tool_sp/',
-        hashtags: 'モンスト,モンスト目標宣言,SPY_FAMILY',
+        hashtags: 'モンスト,モンスト目標宣言,けいウサ',
         lang: 'ja'
       }
     );
