@@ -109,7 +109,9 @@ p[name="multi_check"] {
 
 /*ウィンドウ幅が767px以上の場合に適用*/
 @media screen and (min-width: 1025px) {
-  #update_msg,
+  #update_msg {
+    font-size: 16px;
+  }
   #over_rank_msg {
     font-size: 14px;
   }
@@ -192,7 +194,9 @@ p[name="multi_check"] {
 
 @media screen and (max-width: 1024px) {
   /*ウィンドウ幅が最大767pxまでの場合に適用 タブレット*/
-  #update_msg,
+  #update_msg {
+    font-size: 16px;
+  }
   #over_rank_msg {
     font-size: 14px;
   }
@@ -276,7 +280,9 @@ p[name="multi_check"] {
     font-size: 18px;
   }
 
-  #update_msg,
+  #update_msg {
+    font-size: 14px;
+  }
   #over_rank_msg {
     font-size: 12px;
   }

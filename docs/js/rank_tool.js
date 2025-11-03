@@ -76,12 +76,12 @@ $(document).ready(function() {
             $(ID_TARGET_EXP).text(addFigure(calcRankToExp(ID_TARGET_RANK)));
 
             // イベント期間について
-            let yearFrom = 2024;
-            let monthFrom = 10;
-            let dayFrom = 17;
-            let yearTo = 2024;
-            let monthTo = 10;
-            let dayTo = 23;
+            let yearFrom = 2025;
+            let monthFrom = 11;
+            let dayFrom = 4;
+            let yearTo = 2025;
+            let monthTo = 11;
+            let dayTo = 14;
             let eventFrom = new Date(yearFrom, (monthFrom - 1), dayFrom, 0, 0, 0);
             let eventTo = new Date(yearTo, (monthTo - 1), dayTo);
             let fromTxt = eventFrom.getFullYear() + '年' + (eventFrom.getMonth() + 1) + '月' + eventFrom.getDate() + '日';
